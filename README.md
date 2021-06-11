@@ -11,8 +11,8 @@ Scripts and instructions for XRR on liquid-air interfaces.
 ## Calibration
 
 ### Alignment of the first point
-- Click on ```Calib. XRR``` in JupyLabBook.
-- Go to the first m4pitch point (ideally on the plateau of total reflection), for example m4pitch = -0.08 at 8 keV.
+- Click on ```Calib. XRR``` in JupyLabBook
+- Go to the first m4pitch point (ideally on the plateau of total reflection), for example m4pitch = -0.08 at 8 keV
 - Align c10tablepitch and zs
 - Tune gamma so that the reflected beam is in the desired zone of the Pilatus (for ex. y=925)
 - Create a small ROI centered on the reflected beam (to be used with ```XRR_cont_regh.py```)
