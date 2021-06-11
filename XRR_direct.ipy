@@ -1,0 +1,62 @@
+import numpy as np
+import sys
+import beamline.color as color
+
+%shclose
+%wm m4pitch c10tablepitch zs gamma
+
+# Lower the trough to get the direct beam
+%dmove zs -2
+
+# Initial value for the abs (start with a lot of abs)
+abs_value = 19
+%smove abs abs_value
+
+%shopen
+%ct 2 pilatus
+%sleep 1
+
+# Check at beginning that there are enough absorbers
+if np.max(pilatus.value)>1e6:
+    %shclose
+    print color.BLUE, "Max value reached at the beginning.", color.RED,' STOP! AND PUT MORE ABSORBERS!', color.RESET
+    sys.exit('STOP')
+
+# Remove abs while we have a pixel > 1e5, until we have no more abs to remove
+while (np.max(pilatus.value)<1e5 and abs_value<30):
+    abs_value += 1
+    print color.RED,'Removing an absorber.', color.RESET
+    %smove abs abs_value
+    %ct 2 pilatus
+    %sleep 1
+
+# If we have a pixel > 1e6, put back an abs
+while np.max(pilatus.value)>1e6:
+    abs_value -= 1
+    print color.RED,'Adding an absorber.', color.RESET
+    %smove abs abs_value
+    %ct 2 pilatus
+    %sleep 1
+
+
+gains = np.array([])
+
+# Measure the direct beam with the chamber (for all the gains)
+for i in range(1,7):
+    %amove commandfemtoionchamber i
+    %ct 1 ionchamber
+    gains = np.append(gains, ionchamber.value)
+
+
+f=open(path_folder+str(storage1.filename)+'_direct_gains.dat', 'w')
+f.write('#gain1\t#gain2\t#gain3\t#gain4\t#gain5\t#gain6\n')
+f.write(str(gains[0])+'\t'+str(gains[1])+'\t'+str(gains[2])+'\t'+str(gains[3])+'\t'+str(gains[4])+'\t'+str(gains[5])+'\t')
+f.close()
+
+# Measure the direct beam on the pilatus
+%tscan 10 1
+
+%shclose
+
+# Go back to original position
+%dmove zs 2

@@ -1,0 +1,76 @@
+import beamline.calcul as calcul          
+
+%run reset_motors.ipy
+
+###############################
+# USER INPUT #
+# Values of gamma/delta/abs for the first XRR measurement point
+
+abs_value = 19
+# The Pilatus will go to these values at the end of the cont_regh
+gamma_XRR = 5.59
+delta_XRR = 0.
+###############################
+
+SLEEP=3
+%slist scan add camxReflected camxDeflected zs
+%slist scan remove pilatus pilatusROI1 pilatusROI2 pilatusROI3 
+%setsensorref camxReflected
+%sleep 1
+%seton delta
+%setlimits delta -20 2
+%amove delta -18
+%seton gamma
+%setlimits gamma -2 35
+%amove gamma 22
+%wm zs
+old_zs=zs.value
+%smove abs 23
+%shopen 2
+try:
+    %continuous_dscan zs -.4 .4 100 .5
+except KeyboardInterrupt:
+    pass
+try:
+    SENSOR_FOR_PEAK_EXTRACTION="camxReflected"
+    ix=scanserver1.sensors.index('zs')
+    sx=scanserver1.sensorsDataList[ix]
+    x=scanserver1.read_attribute(sx).value
+    
+    iy=scanserver1.sensors.index('camxreflected')
+    sy=scanserver1.sensorsDataList[iy]
+    y=scanserver1.read_attribute(sy).value
+    y=y-y.min()
+    
+    result=calcul.calc_peak_params(x[1:],y[1:])
+    print result
+except:
+    print "Unable to compute the optimum in the in-house fashion !"
+    print "Will use the spyc fashion"
+try:
+    newzs=float(result['CEN'])
+except:
+    try:
+        newzs=CEN    
+    except:
+        newzs=old_zs
+print "Going to zs max value %3.7g"%(newzs)
+print
+%seton zs
+%sleep 1
+%amove zs newzs
+%sleep 5
+%ct 1
+if camx.state.name!='STANDBY':
+    %ct 1
+%shclose
+%run reset_motors.ipy
+%seton delta
+%amove delta delta_XRR
+%seton gamma
+%amove gamma gamma_XRR
+%smove abs abs_value
+%sleep 1
+%slist scan remove camxReflected camxDeflected camxDirect
+%slist scan add pilatusROI1 pilatusROI2 pilatusROI3 pilatus
+%wm gamma delta zs m4pitch c10tablepitch

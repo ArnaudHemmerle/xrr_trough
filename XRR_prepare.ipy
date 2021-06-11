@@ -1,0 +1,66 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+m4pitch_arr = np.array([])
+timebase_arr = np.array([])
+
+###############################
+# USER INPUT #
+
+# Put here the different parts of the scan
+
+# Part 1
+start = -0.08
+stop = -0.15
+nbpts = 10
+timebase = 2
+m4pitch_arr = np.append(m4pitch_arr, np.linspace(start, stop, nbpts))
+timebase_arr = np.append(timebase_arr, [timebase]*len(np.linspace(start, stop, nbpts)))
+
+# Part 2
+start = -0.15
+stop = -0.5
+nbpts = 12
+timebase = 2
+m4pitch_arr = np.append(m4pitch_arr, np.linspace(start, stop, nbpts))
+timebase_arr = np.append(timebase_arr, [timebase]*len(np.linspace(start, stop, nbpts)))
+
+# Part 3
+start = -0.5
+stop = -0.9
+nbpts = 10
+timebase = 5
+m4pitch_arr = np.append(m4pitch_arr, np.linspace(start, stop, nbpts))
+timebase_arr = np.append(timebase_arr, [timebase]*len(np.linspace(start, stop, nbpts)))
+
+# Part 4
+start = -0.9
+stop = -1.4
+nbpts = 10
+timebase = 10
+m4pitch_arr = np.append(m4pitch_arr, np.linspace(start, stop, nbpts))
+timebase_arr = np.append(timebase_arr, [timebase]*len(np.linspace(start, stop, nbpts)))
+
+
+################################
+
+fig, ax1 = plt.subplots()
+ax1.set_xlabel('m4pitch (deg)', fontsize = 14)
+ax1.set_ylabel('I simu.', fontsize = 14, color = 'b')
+ax1.set_yscale('log')
+ax1.plot(m4pitch_arr,len(m4pitch_arr)*m4pitch_arr**(-4), 'bx-')
+ax1.tick_params(axis='y', labelcolor = 'b')
+ax1.tick_params(labelsize=14)
+ymin, ymax = ax1.get_ylim()
+ax1.set_ylim(1, 5e6)
+ax2 = ax1.twinx()
+
+ax2.set_ylabel('timebase (s)', fontsize = 14, color = 'r')
+ax2.plot(m4pitch_arr,timebase_arr, 'rx-')
+ax2.tick_params(axis='y', labelcolor = 'r')
+ax2.tick_params(labelsize=14)
+ymin, ymax = ax2.get_ylim()
+ax2.set_ylim(0, ymax*1.05)
+
+fig.tight_layout()
+plt.show()

@@ -1,0 +1,154 @@
+import numpy as np
+import sys
+import beamline.color as color
+
+###############################
+# USER INPUT #
+# Insert the calibration values here
+coeff_c10tablepith = 20000.
+coeff_zs = 76.755
+coeff_gamma = 1.
+# Distance pilatus-trough in mm
+D_pilatus = 726.
+# Initial value for the absorbers (start with a lot of abs)
+abs_value = 19
+path_folder = '/nfs/ruche-sirius/sirius-soleil/com-sirius/commissionning/2021/week15/'
+
+###############################
+
+%run reset_motors.ipy
+
+# Measure the direct
+%run XRR_direct.ipy
+
+###############################
+# Check that XRR_prepare.ipy was executed before
+try:
+    print 'list of m4pitch = ', m4pitch_arr
+    print 'list of timebase = ', timebase_arr
+except:
+    print 'm4pitch_arr or timebase_arr does not exist. Run XRR_prepare.ipy first'
+    sys.exit('m4pitch_arr or timebase_arr does not exist')
+
+# Get initial positions
+m4pitch_init = m4pitch.value
+zs_init = zs.value
+c10tablepitch_init = c10tablepitch.value
+gamma_init = gamma.value
+abs_init = abs_value
+
+# Create the trajectories
+c10tablepitch_arr = np.array([])
+zs_arr = np.array([])
+gamma_arr = np.array([])
+
+for j in range(len(m4pitch_arr)):
+    m4pitch_target = m4pitch_arr[j]
+    d_m4pitch = m4pitch_target - m4pitch.value
+    d_c10tablepitch = coeff_c10tablepith*d_m4pitch
+    d_zs = coeff_zs*d_m4pitch
+    d_gamma = -2*d_m4pitch+coeff_gamma*d_zs/D_pilatus*180./np.pi
+    c10tablepitch_arr = np.append(c10tablepitch_arr, c10tablepitch_init+d_c10tablepitch)
+    zs_arr = np.append(zs_arr, zs_init+d_zs)
+    gamma_arr = np.append(gamma_arr, gamma_init+d_gamma)
+
+    if d_zs>1.:
+        print color.RED, 'Careful: zs is going UP!', color.RESET
+
+    if d_c10tablepitch>10.:
+        print color.RED,'Careful: c10tablepitch is going UP!', color.RESET
+
+    if d_gamma>0.1:
+        print color.RED,'Careful: gamma is going UP!', color.RESET
+
+#print m4pitch_arr, c10tablepitch_arr, zs_arr, gamma_arr
+
+# Check at beginning that there are enough absorbers
+%smove abs abs_value
+%shopen
+%ct 2 pilatus
+%sleep 1
+if np.max(pilatus.value)>1e6:
+    %shclose
+    print color.BLUE, "Max value reached at the beginning.", color.RED,' STOP! AND PUT MORE ABSORBERS!', color.RESET
+    sys.exit('STOP')
+
+###############################
+# Create the path to the txt file with the list of XRR files
+file_XRR = path_folder+str(storage1.filename)+'_XRR_files.dat'
+
+for i in range(len(m4pitch_arr)):
+ 
+   ############################### 
+    %wm m4pitch c10tablepitch zs gamma
+    
+    # Move gamma out of the direct beam
+    #%shclose
+    %dmove gamma 2
+
+    # Move the motors
+    %amove zs zs_arr[i]
+    %amove c10tablepitch c10tablepitch_arr[i] m4pitch m4pitch_arr[i] gamma gamma_arr[i]
+
+    #%shopen
+
+    ###############################
+    # Adjust the absorbers
+    %ct 2 pilatus
+    %sleep 1
+
+    # Remove abs until we have a pixel > 5e4 or we have no more abs
+    while (np.max(pilatus.value)<5e4 and abs_value<30):
+        abs_value += 1
+        print color.RED,'Removing an absorber.', color.RESET
+        %smove abs abs_value
+        %ct 2 pilatus
+        %sleep 1
+
+    # If we have a pixel > 5e5, put back an abs
+    while np.max(pilatus.value)>5e5:
+        abs_value -= 1
+        print color.RED,'Adding an absorber.', color.RESET
+        %smove abs abs_value
+        %ct 2 pilatus
+        %sleep 1
+
+    ###############################
+    # Measure the incident beam with every gain on the chamber
+    # Write the value in a text file
+
+    gains = np.array([])
+    for k in range(1,7):
+        %amove commandfemtoionchamber k
+        %ct 1 ionchamber
+        gains = np.append(gains, ionchamber.value)
+
+    f=open(path_folder+str(storage1.filename)+'_XRR_gains.dat', 'w')
+    f.write('#m4pitch\t#gain1\t#gain2\t#gain3\t#gain4\t#gain5\t#gain6\n')
+    f.write(str(m4pitch.value)+'\t'+str(gains[0])+'\t'+str(gains[1])+'\t'+str(gains[2])+'\t'+str(gains[3])+'\t'+str(gains[4])+'\t'+str(gains[5])+'\t')
+    f.close()
+
+    ###############################
+    # Append the next file to the list of XRR files
+    f=open(file_XRR, 'a')
+    f.write(str(storage1.filename)+'\n')
+    f.close()
+
+    # Take the image on the pilatus
+    timebase = timebase_arr[i]
+    %tscan 10 timebase
+
+%shclose
+
+print 'Data written in %s'%path_folder
+print 'First file : %s'%file_XRR
+
+# Move back to initial positions
+%amove m4pitch m4pitch_init c10tablepitch c10tablepitch_init gamma gamma_init
+%setspeed zs .5
+%amove zs zs_init
+%smove abs abs_init
+%run reset_motors.ipy
+
+
+
