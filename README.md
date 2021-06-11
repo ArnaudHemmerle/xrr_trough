@@ -40,13 +40,11 @@ When done, execute the cell.
     - abs_value
     - path_folder  
     <br/><br/>    
-    
 - In ```XRR_cont_regh.ipy```, check that the moves are ok and put the right values in:
     - gamma_XRR
     - delta_XRR
     - abs_value  
-
-
+    <br/><br/>
 - In ```XRR_direct.ipy```, put the right value in:
     - abs_value  
 
