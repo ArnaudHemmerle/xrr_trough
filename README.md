@@ -15,7 +15,7 @@ Scripts and instructions for XRR on liquid-air interfaces.
 - Go to the first m4pitch point (ideally on the plateau of total reflection), for example m4pitch = -0.08 at 8 keV
 - Align c10tablepitch and zs
 - Tune gamma so that the reflected beam is in the desired zone of the Pilatus (for ex. y=925)
-- Create a small ROI centered on the reflected beam (to be used with ```XRR_cont_regh.py```)
+- Create a small ROI centered on the reflected beam (useful for control on Salsa)
 - Report the values and the distance Pilatus-trough (center of the trough)
 - Click on ```Start```
 
@@ -38,19 +38,19 @@ When done, execute the cell.
     - coeff_gamma
     - D_pilatus
     - abs_value
-    - path_folder
+    - path_folder  
     
 - In ```XRR_cont_regh.ipy```, check that the moves are ok and put the right values in:
     - gamma_XRR
     - delta_XRR
-    - abs_value
+    - abs_value  
 
 - In ```XRR_direct.ipy```, put the right value in:
-    - abs_value
+    - abs_value  
 
 ## Do a scan
-- Edit XRR_prepare.ipy
-- **Run ```XRR_prepare.ipy```** and check that the values are ok.
+- Edit ```XRR_prepare.ipy```
+- **Run ```XRR_prepare.ipy```** and check that the values are ok
 - Run ```XRR.ipy```
 
 ## Extract the scan using JupyLabBook
@@ -58,11 +58,11 @@ When done, execute the cell.
 ### First scan of the experiment
 - Select and treat the first XRR scan (careful, not the direct)
 - Fill in ROI x0/y0/sizex/sizey
-- Check the result with the button ```Show ROI```. Verify that the ROI is long enough to contain all the reflected beams (if the beam moves a bit).
+- Check the result with the button ```Show ROI```. Verify that the ROI is long enough to contain all the reflected beams (if the beam moves a bit)
 - Fill m4pitch0 and wavelength
 - If there is no direct scan, force the value of the direct (for normalization)
-- If there is a direct scan, select it. Check that the ROI is long enough to contain the direct by clicking on ```Show ROI Direct```.
-- No need to plot gains, but better to plot m4pitch and qz. 
+- If there is a direct scan, select it. Check that the ROI is long enough to contain the direct by clicking on ```Show ROI Direct```
+- No need to plot gains, but better to plot m4pitch and qz
 - Click on ```Extract & Plot XRR```
 
 ### Next scans
@@ -71,5 +71,5 @@ Previous values are the default ones (no need to check everything).
 - Click on ```Extract & Plot XRR```
 
 ## Results
-Results are saved as text file in the working directory.  
+Results are saved as a text file in the working directory.  
 There is a header : #m4pitch(deg)    #theta(rad)    #qz(nm-1)    #I0    #I    #direct    #R
