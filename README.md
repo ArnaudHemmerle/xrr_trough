@@ -33,12 +33,12 @@ When done, execute the cell.
 
 ### Report values in the XRR scripts
 - In ```XRR.ipy```, put the right values in:
-    - coeff_c10tablepith
-    - coeff_zs
-    - coeff_gamma
-    - D_pilatus
-    - abs_value
-    - path_folder  
+- coeff_c10tablepith
+- coeff_zs
+- coeff_gamma
+- D_pilatus
+- abs_value
+- path_folder  
     
     
 - In ```XRR_cont_regh.ipy```, check that the moves are ok and put the right values in:
