@@ -11,13 +11,13 @@ Scripts and instructions for XRR on liquid-air interfaces.
 ## Calibration
 
 ### Alignment of the first point
-- Click on '''Calib. XRR''' in JupyLabBook.
+- Click on ```Calib. XRR``` in JupyLabBook.
 - Go to the first m4pitch point (ideally on the plateau of total reflection), for example m4pitch = -0.08 at 8 keV.
 - Align c10tablepitch and zs
 - Tune gamma so that the reflected beam is in the desired zone of the Pilatus (for ex. y=925)
-- Create a small ROI centered on the reflected beam (to be used with '''XRR_cont_regh.py''')
+- Create a small ROI centered on the reflected beam (to be used with ```XRR_cont_regh.py```)
 - Report the values and the distance Pilatus-trough (center of the trough)
-- Click on '''Start'''
+- Click on ```Start```
 
 ### Calibration
 For each line of the table (except the first one, already done):
@@ -32,7 +32,7 @@ For each line of the table (except the first one, already done):
 When done, execute the cell.
 
 ### Report values in the XRR scripts
-- In '''XRR.ipy''', put the right values in:
+- In ```XRR.ipy```, put the right values in:
     - coeff_c10tablepith
     - coeff_zs
     - coeff_gamma
@@ -40,35 +40,35 @@ When done, execute the cell.
     - abs_value
     - path_folder
     
-- In '''XRR_cont_regh.ipy''', check that the moves are ok and put the right values in:
+- In ```XRR_cont_regh.ipy```, check that the moves are ok and put the right values in:
     - gamma_XRR
     - delta_XRR
     - abs_value
 
-- In '''XRR_direct.ipy''', put the right value in:
+- In ```XRR_direct.ipy```, put the right value in:
     - abs_value
 
 ## Do a scan
 - Edit XRR_prepare.ipy
-- **Run '''XRR_prepare.ipy'''** and check that the values are ok.
-- Run '''XRR.ipy'''
+- **Run ```XRR_prepare.ipy```** and check that the values are ok.
+- Run ```XRR.ipy```
 
 ## Extract the scan using JupyLabBook
 
 ### First scan of the experiment
 - Select and treat the first XRR scan (careful, not the direct)
 - Fill in ROI x0/y0/sizex/sizey
-- Check the result with the button '''Show ROI'''. Verify that the ROI is long enough to contain all the reflected beams (if the beam moves a bit).
+- Check the result with the button ```Show ROI```. Verify that the ROI is long enough to contain all the reflected beams (if the beam moves a bit).
 - Fill m4pitch0 and wavelength
 - If there is no direct scan, force the value of the direct (for normalization)
-- If there is a direct scan, select it. Check that the ROI is long enough to contain the direct by clicking on '''Show ROI Direct'''.
+- If there is a direct scan, select it. Check that the ROI is long enough to contain the direct by clicking on ```Show ROI Direct```.
 - No need to plot gains, but better to plot m4pitch and qz. 
-- Click on '''Extract & Plot XRR'''
+- Click on ```Extract & Plot XRR```
 
 ### Next scans
 Previous values are the default ones (no need to check everything).
 - Select and treat the first XRR scan (careful, not the direct)
-- Click on '''Extract & Plot XRR'''
+- Click on ```Extract & Plot XRR```
 
 ## Results
 Results are saved as text file in the working directory.  
