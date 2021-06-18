@@ -1,6 +1,7 @@
 import beamline.calcul as calcul          
 
 %run reset_motors.ipy
+%shclose
 
 ###############################
 # USER INPUT #
