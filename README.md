@@ -49,6 +49,7 @@ When done, execute the cell.
     - abs_value  
 
 ## Do a scan
+- Find the right zs with ```XRR_cont_regh.ipy```  
 - Edit ```XRR_prepare.ipy```
 - **Run ```XRR_prepare.ipy```** and check that the values are ok
 - Run ```XRR.ipy```
