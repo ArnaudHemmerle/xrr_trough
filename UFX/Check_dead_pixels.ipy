@@ -1,0 +1,18 @@
+import numpy as np
+
+
+
+def set_dead_pixels(image):
+
+    # Get positions of the dead pixels of the ufx
+    file_dead_pixels_ufx = 'dead_pixels_ufx.dat'
+    dead_pixels_ufx = np.genfromtxt(file_dead_pixels_ufx, dtype = 'uint16', delimiter = ', ')
+
+    for ii, jj in dead_pixels_ufx:
+        image[ii, jj] = 0.0
+
+    return image
+
+print np.max(ufx.value)
+test = set_dead_pixels(ufx.value)
+print np.max(test)
