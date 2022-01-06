@@ -1,6 +1,6 @@
-# XRR
+# XRR on Langmuir trough
 
-Scripts and instructions for XRR on liquid-air interfaces.
+Scripts and instructions for XRR performed on the Langmuir trough.
 
 ## Alignment
 
