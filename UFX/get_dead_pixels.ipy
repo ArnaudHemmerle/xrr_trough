@@ -1,6 +1,6 @@
 import numpy as np
 
-
+# Used to check if all the dead pixels were caught
 
 def set_dead_pixels(image):
 
@@ -16,3 +16,4 @@ def set_dead_pixels(image):
 print np.max(ufx.value)
 test = set_dead_pixels(ufx.value)
 print np.max(test)
+print np.unravel_index(np.argmax(test), test.shape)
