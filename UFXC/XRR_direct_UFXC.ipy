@@ -7,11 +7,11 @@ print 'Write data in %s'%path_folder
 
 def set_dead_pixels(image):
 
-    # Get positions of the dead pixels of the ufx
-    file_dead_pixels_ufx = 'dead_pixels_ufx.dat'
-    dead_pixels_ufx = np.genfromtxt(file_dead_pixels_ufx, dtype = 'uint16', delimiter = ', ')
+    # Get positions of the dead pixels of the ufxc
+    file_dead_pixels_ufxc = 'dead_pixels_ufxc_1.dat'
+    dead_pixels_ufxc = np.genfromtxt(file_dead_pixels_ufxc, dtype = 'uint16', delimiter = ', ')
 
-    for ii, jj in dead_pixels_ufx:
+    for ii, jj in dead_pixels_ufxc:
         image[ii, jj] = 0.0
 
     return image
@@ -28,8 +28,8 @@ abs_value = 19
 %smove abs abs_value
 
 %shopen
-%ct 1 ufx
-image = set_dead_pixels(ufx.value)
+%ct 1 ufxc
+image = set_dead_pixels(ufxc.value)
 %sleep 1
 
 # Check at beginning that there are enough absorbers
@@ -43,8 +43,8 @@ while (np.max(image)<5e5 and abs_value<30):
     abs_value += 1
     print color.RED,'Removing an absorber.', color.RESET
     %smove abs abs_value
-    %ct 1 ufx
-    image = set_dead_pixels(ufx.value)
+    %ct 1 ufxc
+    image = set_dead_pixels(ufxc.value)
     %sleep 1
 
 # If we have a pixel > 1e6, put back an abs
@@ -52,8 +52,8 @@ while np.max(image)>1e6:
     abs_value -= 1
     print color.RED,'Adding an absorber.', color.RESET
     %smove abs abs_value
-    %ct 1 ufx
-    image = set_dead_pixels(ufx.value)
+    %ct 1 ufxc
+    image = set_dead_pixels(ufxc.value)
     %sleep 1
 
 
@@ -71,7 +71,7 @@ f.write('#gain1\t#gain2\t#gain3\t#gain4\t#gain5\t#gain6\n')
 f.write(str(gains[0])+'\t'+str(gains[1])+'\t'+str(gains[2])+'\t'+str(gains[3])+'\t'+str(gains[4])+'\t'+str(gains[5])+'\t')
 f.close()
 
-# Measure the direct beam on the ufx
+# Measure the direct beam on the ufxc
 %tscan 10 1
 
 %shclose

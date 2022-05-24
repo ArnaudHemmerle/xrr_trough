@@ -8,8 +8,8 @@ import beamline.color as color
 coeff_c10tablepith = 19986.
 coeff_zs = 77.06881
 coeff_gamma = 0.9984
-# Distance UFX-trough in mm
-D_UFX = 730.
+# Distance UFXC-trough in mm
+D_UFXC = 730.
 # Initial value for the absorbers (start with a lot of abs)
 abs_value = 19
 path_folder = '/nfs/ruche-sirius/sirius-soleil/com-sirius/commissionning/2021/week39/'
@@ -19,11 +19,11 @@ path_folder = '/nfs/ruche-sirius/sirius-soleil/com-sirius/commissionning/2021/we
 
 def set_dead_pixels(image):
 
-    # Get positions of the dead pixels of the ufx
-    file_dead_pixels_ufx = 'dead_pixels_ufx.dat'
-    dead_pixels_ufx = np.genfromtxt(file_dead_pixels_ufx, dtype = 'uint16', delimiter = ', ')
+    # Get positions of the dead pixels of the ufxc
+    file_dead_pixels_ufxc = 'dead_pixels_ufxc_1.dat'
+    dead_pixels_ufxc = np.genfromtxt(file_dead_pixels_ufxc, dtype = 'uint16', delimiter = ', ')
 
-    for ii, jj in dead_pixels_ufx:
+    for ii, jj in dead_pixels_ufxc:
         image[ii, jj] = 0.0
 
     return image
@@ -32,7 +32,7 @@ def set_dead_pixels(image):
 %run reset_motors.ipy
 
 # Measure the direct
-%run XRR_direct_UFX.ipy
+%run XRR_direct_UFXC.ipy
 
 ###############################
 # Check that XRR_prepare.ipy was executed before
@@ -60,7 +60,7 @@ for j in range(len(m4pitch_arr)):
     d_m4pitch = m4pitch_target - m4pitch.value
     d_c10tablepitch = coeff_c10tablepith*d_m4pitch
     d_zs = coeff_zs*d_m4pitch
-    d_gamma = -2*d_m4pitch+coeff_gamma*d_zs/D_UFX*180./np.pi
+    d_gamma = -2*d_m4pitch+coeff_gamma*d_zs/D_UFXC*180./np.pi
     c10tablepitch_arr = np.append(c10tablepitch_arr, c10tablepitch_init+d_c10tablepitch)
     zs_arr = np.append(zs_arr, zs_init+d_zs)
     gamma_arr = np.append(gamma_arr, gamma_init+d_gamma)
@@ -79,8 +79,8 @@ for j in range(len(m4pitch_arr)):
 # Check at beginning that there are enough absorbers
 %smove abs abs_value
 %shopen
-%ct 1 ufx
-image = set_dead_pixels(ufx.value)
+%ct 1 ufxc
+image = set_dead_pixels(ufxc.value)
 %sleep 1
 
 if np.max(image)>1e6:
@@ -109,8 +109,8 @@ for i in range(len(m4pitch_arr)):
 
     ###############################
     # Adjust the absorbers
-    %ct 1 ufx
-    image = set_dead_pixels(ufx.value)    
+    %ct 1 ufxc
+    image = set_dead_pixels(ufxc.value)
     %sleep 1
     
 
@@ -119,8 +119,8 @@ for i in range(len(m4pitch_arr)):
         abs_value += 1
         print color.RED,'Removing an absorber.', color.RESET
         %smove abs abs_value
-        %ct 1 ufx
-        image = set_dead_pixels(ufx.value) 
+        %ct 1 ufxc
+        image = set_dead_pixels(ufxc.value)
         %sleep 1
 
     # If we have a pixel > 1e6, put back an abs
@@ -128,8 +128,8 @@ for i in range(len(m4pitch_arr)):
         abs_value -= 1
         print color.RED,'Adding an absorber.', color.RESET
         %smove abs abs_value
-        %ct 1 ufx
-        image = set_dead_pixels(ufx.value) 
+        %ct 1 ufxc
+        image = set_dead_pixels(ufxc.value)
         %sleep 1
 
     ###############################
@@ -153,7 +153,7 @@ for i in range(len(m4pitch_arr)):
     f.write(str(storage1.filename)+'\n')
     f.close()
 
-    # Take the image on the ufx
+    # Take the image on the ufxc
     timebase = timebase_arr[i]
     %tscan 10 timebase
 

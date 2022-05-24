@@ -36,7 +36,7 @@ When done, execute the cell.
     - coeff_c10tablepith
     - coeff_zs
     - coeff_gamma
-    - D_pilatus or D_UFX
+    - D_pilatus or D_UFXC
     - abs_value
     - path_folder  
     <br/><br/>    

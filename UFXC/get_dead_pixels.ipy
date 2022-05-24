@@ -1,0 +1,19 @@
+import numpy as np
+
+# Used to check if all the dead pixels were caught
+
+def set_dead_pixels(image):
+
+    # Get positions of the dead pixels of the ufxc
+    file_dead_pixels_ufxc = 'dead_pixels_ufxc_1.dat'
+    dead_pixels_ufxc = np.genfromtxt(file_dead_pixels_ufxc, dtype = 'uint16', delimiter = ', ')
+
+    for ii, jj in dead_pixels_ufxc:
+        image[ii, jj] = 0.0
+
+    return image
+
+print np.max(ufxc.value)
+test = set_dead_pixels(ufxc.value)
+print np.max(test)
+print np.unravel_index(np.argmax(test), test.shape)
